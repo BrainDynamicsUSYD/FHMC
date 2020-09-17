@@ -1,0 +1,5 @@
+addpath(genpath('./mains'))
+%addpath(genpath('./subroutines'))
+%addpath(genpath('./frac_toolbox'))
+%addpath(genpath('./headnode_mains'))
+%addpath(genpath('/import/headnode2/yifan/Project2/SWR_reference_g_and_a'))
