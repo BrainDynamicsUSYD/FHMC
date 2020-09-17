@@ -2,7 +2,7 @@ function main_unimodal(option,varargin)
 
 switch option
     case 'plot_only'
-        plot_unimodal(varargin{1},[0 2]);
+        plot_unimodal(varargin{1},[3]);
         return
     case 'analysis_only'
         post_process_unimodal(varargin{1});
@@ -171,5 +171,20 @@ if any(index == 2)
     print(gcf, '-dpdf', 'figures\fig_main_unimodal_postprocess_histogram.pdf'); 
 end
 
+if any(index == 3)
+    f3 = myfigure;
+    plot(Q.tau,Q.MSE(:,1:2,1)./Q.MSE(1,1:2,1),Q.tau,Q.MSE(:,1:2,2)./Q.MSE(1,1:2,2),'--','linewidth',1.5)
+    hold on
+    plot(Q.tau([1 end]),[0 0],'color',[0.4 0.4 0.4],'HandleVisibility','off')
+    
+    xlim([0 8])
+    xlabel('Time Lag')
+    ylabel('Mean Squared Error')
+    legend('FHMC','FLMC','HMC','LMC','box','off')
+    subplotmod;
+    offsetAxes;
+    
+    export_fig(f3,'figures/fig_main_unimodal_postprocess_mse.pdf','-pdf','-nocrop','-transparent','-painters');
+end
 
 end
