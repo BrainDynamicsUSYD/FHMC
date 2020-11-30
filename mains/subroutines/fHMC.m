@@ -1,4 +1,4 @@
-function [X,t] = fHMC(T,a,p)
+function [X,t,V] = fHMC(T,a,p)
 %Levy Monte Carlo
 %INPUT: T = time span (s), a = Levy characteristic exponent
 % p = other parameters
@@ -22,7 +22,7 @@ t = (0:n-1)*dt;
 x = p.x0; %initial condition
 r = p.r0;
 X = zeros(n,1); %position
-%R = zeros(n,1); %momentum
+V = zeros(n,1); %momentum
 
 switch p.target
     case 'unimodal'
@@ -96,6 +96,26 @@ switch p.methods.solver
                 end
             end
             X(i) = x;
+            V(i) = r;
+        end
+    case 'Experimental'
+        for i = 1:n
+            while true
+                %diffusion term
+                gam = 1;
+                beta = 1;
+                g = stblrnd(a,0,1,0); %Levy r.v. wt expo a and scale 1                
+                xnew = x + gam*ba(x)*dt + beta*r*dt + (gam^(1/a))*g*dta;
+                rnew = r + beta*ba(x)*dt;
+                %accept criterion
+                if abs(xnew)<p.xmax %5
+                    x = xnew;
+                    r = rnew;
+                    break %accept
+                end
+            end
+            X(i) = x;
+            V(i) = r;
         end
     case 'Underdamped'
         sas = makedist('Stable','alpha',1/a,'beta',0,'gam',1,'delta',0);
